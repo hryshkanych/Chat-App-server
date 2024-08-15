@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.js'; // Correct path if using ES modules
 
 // Register a new user
-export const registerUser = async (req, res) => {
+export const signupUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
     
@@ -38,7 +38,7 @@ export const registerUser = async (req, res) => {
 };
 
 // Login a user
-export const loginUser = async (req, res) => {
+export const signinUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
