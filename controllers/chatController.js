@@ -50,7 +50,7 @@ export const getUserChats = async (req, res) => {
           },
           lastMessage: lastMessage ? {
             text: lastMessage.text,
-            sentAt: lastMessage.createdAt
+            createdAt: lastMessage.createdAt
           } : null
         });
       }
@@ -58,7 +58,7 @@ export const getUserChats = async (req, res) => {
       chatDetails.sort((a, b) => {
         if (!a.lastMessage) return 1;
         if (!b.lastMessage) return -1;
-        return new Date(b.lastMessage.sentAt) - new Date(a.lastMessage.sentAt);
+        return new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt);
       });
 
       res.status(200).json({ chats: chatDetails });

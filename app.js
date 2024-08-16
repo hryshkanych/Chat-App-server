@@ -1,12 +1,21 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import chattingRoutes from './routes/chattingRoutes.js';
 
 dotenv.config();
 
 const app = express();
+
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:3001',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(express.json());
