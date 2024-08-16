@@ -1,5 +1,7 @@
 import express from 'express';
-import { signupUser, signinUser } from '../controllers/userController.js'; // Adjust path if necessary
+import { signupUser, signinUser } from '../controllers/userController.js'; 
+import { createChat } from '../controllers/chatController.js';
+import { createMessage } from '../controllers/messageController.js';
 
 const router = express.Router();
 

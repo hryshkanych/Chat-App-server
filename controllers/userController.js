@@ -29,13 +29,22 @@ export const signupUser = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.cookie('token', token, { httpOnly: true });
-    res.status(201).json({ message: 'User created successfully' });
+    res.cookie('token', token);  // було http only
+    res.status(201).json({ 
+      message: 'User created successfully',
+      user: {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating user', error });
   }
 };
+
 
 // Login a user
 export const signinUser = async (req, res) => {
@@ -59,7 +68,15 @@ export const signinUser = async (req, res) => {
     );
 
     res.cookie('token', token, { httpOnly: true });
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({ 
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error logging in', error });
