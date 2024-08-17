@@ -85,3 +85,21 @@ export const signinUser = async (req, res) => {
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
+
+
+export const getUserByName = async (req, res) => {
+  try {
+      const { firstName, lastName } = req.body; // Get data from body
+
+      const user = await User.findOne({ firstName, lastName });
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      res.status(200).json({ user });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error retrieving user.' });
+  }
+};

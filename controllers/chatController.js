@@ -17,6 +17,9 @@ export const createChat = async (req, res) => {
 
     await newChat.save();
 
+    console.log('chat id'+newChat._id);
+    
+
     res.status(201).json({ chat: newChat });
   } catch (error) {
     console.error(error);
