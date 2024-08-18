@@ -44,7 +44,7 @@ export const getUserChats = async (req, res) => {
         const lastMessage = await Message.findOne({ chatId: chat._id })
                                          .sort({ createdAt: -1 })
                                          .select('text createdAt');
-        console.log('other user  ',otherParticipant._id );
+        // console.log('other user  ',otherParticipant._id );
         
   
         chatDetails.push({
@@ -74,3 +74,5 @@ export const getUserChats = async (req, res) => {
     }
   };
   
+
+
