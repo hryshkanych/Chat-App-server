@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import User from '../models/user.js'; // Correct path if using ES modules
+import User from '../models/user.js'; 
+import Chat from '../models/chat.js';
 
-// Register a new user
 export const signupUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -23,13 +23,24 @@ export const signupUser = async (req, res) => {
 
     await newUser.save();
 
+    const randomUsers = await User.aggregate([{ $sample: { size: 3 } }]);
+
+    const chatPromises = randomUsers.map(randomUser => {
+      return new Chat({
+        participants: [newUser._id, randomUser._id],
+        messages: [] 
+      }).save();
+    });
+
+    await Promise.all(chatPromises);
+
     const token = jwt.sign(
       { userId: newUser._id },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    res.cookie('token', token);  // було http only
+    res.cookie('token', token);
     res.status(201).json({ 
       message: 'User created successfully',
       user: {
@@ -45,8 +56,6 @@ export const signupUser = async (req, res) => {
   }
 };
 
-
-// Login a user
 export const signinUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -86,10 +95,9 @@ export const signinUser = async (req, res) => {
   }
 };
 
-
 export const getUserByName = async (req, res) => {
   try {
-      const { firstName, lastName } = req.body; // Get data from body
+      const { firstName, lastName } = req.body; 
 
       const user = await User.findOne({ firstName, lastName });
 

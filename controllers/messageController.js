@@ -30,20 +30,19 @@ export const createMessage = async (req, res) => {
   }
 };
 
-
 export const getMessagesOfChat = async (req, res) => {
-    try {
-      const { chatId } = req.params;
+  try {
+    const { chatId } = req.params;
 
-      if (!chatId) {
-        return res.status(400).json({ message: 'Chat ID is required.' });
-      }
-  
-      const messages = await Message.find({ chatId }).sort({ createdAt: 1 });
-  
-      res.status(200).json({ messages });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error retrieving messages.' });
+    if (!chatId) {
+      return res.status(400).json({ message: 'Chat ID is required.' });
     }
-  };
+
+    const messages = await Message.find({ chatId }).sort({ createdAt: 1 });
+
+    res.status(200).json({ messages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving messages.' });
+  }
+};

@@ -12,13 +12,10 @@ export const createChat = async (req, res) => {
 
     const newChat = new Chat({
       participants,
-      messages: [] 
+      messages: []
     });
 
     await newChat.save();
-
-    console.log('chat id'+newChat._id);
-    
 
     res.status(201).json({ chat: newChat });
   } catch (error) {
@@ -27,53 +24,47 @@ export const createChat = async (req, res) => {
   }
 };
 
-
-// отримати чати користувача, аби збоку відобразити
 export const getUserChats = async (req, res) => {
-    try {
-      const { userId } = req.params;
-  
-      const chats = await Chat.find({ participants: userId }).populate('participants');
-  
-      const chatDetails = [];
-  
+  try {
+    const { userId } = req.params;
 
-      for (let chat of chats) {
-        const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);
-        const otherUser = await User.findById(otherParticipant._id).select('firstName lastName');
-        const lastMessage = await Message.findOne({ chatId: chat._id })
-                                         .sort({ createdAt: -1 })
-                                         .select('text createdAt');
-        // console.log('other user  ',otherParticipant._id );
-        
-  
-        chatDetails.push({
-          chatId: chat._id,
-          user: {
-            otherUserId: otherParticipant._id,
-            firstName: otherUser.firstName,
-            lastName: otherUser.lastName
-          },
-          lastMessage: lastMessage ? {
-            text: lastMessage.text,
-            createdAt: lastMessage.createdAt
-          } : null
-        });
-      }
-  
-      chatDetails.sort((a, b) => {
-        if (!a.lastMessage) return 1;
-        if (!b.lastMessage) return -1;
-        return new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt);
+    const chats = await Chat.find({ participants: userId }).populate('participants');
+
+    const chatDetails = [];
+
+    for (let chat of chats) {
+      const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);
+      const otherUser = await User.findById(otherParticipant._id).select('firstName lastName');
+      const lastMessage = await Message.findOne({ chatId: chat._id })
+                                       .sort({ createdAt: -1 })
+                                       .select('text createdAt');
+
+      chatDetails.push({
+        chatId: chat._id,
+        user: {
+          otherUserId: otherParticipant._id,
+          firstName: otherUser.firstName,
+          lastName: otherUser.lastName
+        },
+        lastMessage: lastMessage ? {
+          text: lastMessage.text,
+          createdAt: lastMessage.createdAt
+        } : null
       });
-
-      res.status(200).json({ chats: chatDetails });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error retrieving user chats.' });
     }
-};
 
+    chatDetails.sort((a, b) => {
+      if (!a.lastMessage) return 1;
+      if (!b.lastMessage) return -1;
+      return new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt);
+    });
+
+    res.status(200).json({ chats: chatDetails });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving user chats.' });
+  }
+};
 
 export const deleteChat = async (req, res) => {
   try {
@@ -93,6 +84,3 @@ export const deleteChat = async (req, res) => {
     res.status(500).json({ message: 'Error deleting chat.' });
   }
 };
-  
-
-
