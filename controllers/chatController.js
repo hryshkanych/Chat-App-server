@@ -32,12 +32,15 @@ export const getUserChats = async (req, res) => {
 
     const chatDetails = [];
 
+
     for (let chat of chats) {
       const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);
       const otherUser = await User.findById(otherParticipant._id).select('firstName lastName');
       const lastMessage = await Message.findOne({ chatId: chat._id })
                                        .sort({ createdAt: -1 })
                                        .select('text createdAt');
+      // console.log('other user  ',otherParticipant._id );
+      
 
       chatDetails.push({
         chatId: chat._id,
